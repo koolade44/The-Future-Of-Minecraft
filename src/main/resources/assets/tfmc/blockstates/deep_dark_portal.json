@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "tfmc:block/deep_dark_portal_ns"
+    },
+    "axis=z":{
+      "model": "tfmc:block/deep_dark_portal_ew"
+    }
+  }
+}

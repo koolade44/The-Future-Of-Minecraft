@@ -1,22 +1,18 @@
 package com.koolade446.tfmc.world;
 
 import com.koolade446.tfmc.Tfmc;
-import com.koolade446.tfmc.blocks.DeepDarkPortalBlock;
-import com.koolade446.tfmc.registry.RegistryHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import java.util.function.Predicate;
 
 public class CustomPortalShape{
 
-    private int MAX_HEIGHT;
-    private int MIN_HEIGHT;
+    private final int MAX_HEIGHT;
     private final int MAX_WIDTH;
     private final Direction.Axis AXIS;
     private final Direction traceDirection;
@@ -37,7 +33,6 @@ public class CustomPortalShape{
 
     public CustomPortalShape(int MIN_WIDTH, int MAX_WIDTH, int MIN_HEIGHT, int MAX_HEIGHT, BlockPos startingPosition, LevelAccessor level, Block frameBlock) {
         this.MAX_WIDTH = MAX_WIDTH;
-        this.MIN_HEIGHT = MIN_HEIGHT;
         this.MAX_HEIGHT = MAX_HEIGHT;
         this.startingPosition = startingPosition;
         this.level = level;
@@ -47,7 +42,7 @@ public class CustomPortalShape{
         this.bottomLeft = calculateBottomLeft();
 
         int h;
-        this.height = (h = calculateHeight()) >= this.MIN_HEIGHT ? h : 0;
+        this.height = (h = calculateHeight()) >= MIN_HEIGHT ? h : 0;
 
         int w;
         this.width = (w = calculateWidth()) >= MIN_WIDTH ? w : 0;
@@ -143,8 +138,8 @@ public class CustomPortalShape{
             BlockPos bottomPos = bottomLeft.mutable().move(traceDirection.getOpposite(), i);
             BlockPos topPos = topRight.mutable().move(traceDirection, i);
             Tfmc.LOGGER.info(String.valueOf(i));
-            Tfmc.LOGGER.info("testing " + bottomPos + " is " + frameChecker.test(bottomPos));
-            Tfmc.LOGGER.info("testing " + topPos+ " is " + frameChecker.test(topPos));
+            Tfmc.LOGGER.info(bottomPos + " is " + frameChecker.test(bottomPos));
+            Tfmc.LOGGER.info(topPos+ " is " + frameChecker.test(topPos));
             if (!frameChecker.test(bottomPos) || !frameChecker.test(topPos)) {return false;}
         }
         Tfmc.LOGGER.info("Testing height");
@@ -152,8 +147,8 @@ public class CustomPortalShape{
             BlockPos leftPos = bottomLeft.above(i);
             BlockPos rightPos = topRight.below(i);
             Tfmc.LOGGER.info(String.valueOf(i));
-            Tfmc.LOGGER.info("testing " + leftPos + " is " + frameChecker.test(leftPos));
-            Tfmc.LOGGER.info("testing " + rightPos + " is " + frameChecker.test(rightPos));
+            Tfmc.LOGGER.info(leftPos + " is " + frameChecker.test(leftPos));
+            Tfmc.LOGGER.info(rightPos + " is " + frameChecker.test(rightPos));
             if (!frameChecker.test(leftPos) || !frameChecker.test(rightPos)) {return false;}
         }
         return width != 0 && height != 0;
@@ -162,7 +157,6 @@ public class CustomPortalShape{
     public boolean tryFillPortal(BlockState blockState) {
         if (!isValid) return false;
         else {
-            Tfmc.LOGGER.info(blockState.getProperties().stream().toList().toString());
             final BlockState state = blockState.getProperties().contains(BlockStateProperties.HORIZONTAL_AXIS) ? blockState.setValue(BlockStateProperties.HORIZONTAL_AXIS, AXIS) : blockState;
             BlockPos portalBottomLeft = bottomLeft.above().mutable().move(traceDirection.getOpposite(), 1);
             for (int i = 0; i < width - 2; ++i) {

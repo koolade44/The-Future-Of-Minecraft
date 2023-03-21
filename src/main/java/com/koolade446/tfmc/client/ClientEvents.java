@@ -16,7 +16,6 @@ public class ClientEvents {
         @SubscribeEvent
         public static void clientOnlySetup(FMLClientSetupEvent event) {
             Tfmc.playerValues = new CustomPlayerValues();
-            RenderType.cutout();
         }
     }
 
